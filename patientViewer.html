@@ -1,0 +1,240 @@
+<html>
+	<head>
+		<title>Patient Record Management</title>
+		<link rel="stylesheet"
+href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	</head>
+	
+	<body>
+	<h1>Patient Info</h1>
+	<div><button id="showCreateButton" onclick="showCreate()">Create</button></div>
+	<h1>Patients</h1>
+		<div>
+			<table class="table" id="patientTable">
+			<tr>
+				<th>id</th>
+				<th>Patients_Name</th>
+				<th>Patients_Doctor</th>
+				<th>Patients_Address</th>
+				<th>Patients_Age</th>
+				<th>Update</th>
+				<th>Delete</th>
+			</tr>
+			</table>
+		</div>
+		<div id='createUpdateForm' style="display: none">
+			<h2><span id="createLabel">Input a new</span> <span id="updateLabel">Update this</span> Patient</h2>
+			Patients_Name <input type="text" name="Patients_Name"><br/>
+			Patients_Doctor<input type="text" name="Patients_Doctor"><br/>
+			Patients_Address <input type="text" name="Patients_Address"><br/>
+			Patients_Age<input type="number" name="Patients_Age"><br/>
+			<span><button id="doCreateButton" onclick="doCreate()">Create</button></span>
+			<span><button id="doUpdateButton" onclick="doUpdate()">Update</button></span>
+		</div>
+		<script>
+            function showCreate(){
+				document.getElementById('showCreateButton').style.display="none"
+				document.getElementById('patientTable').style.display="none"
+				document.getElementById('createUpdateForm').style.display="block"	
+
+				document.getElementById('createLabel').style.display="inline"
+				document.getElementById('updateLabel').style.display="none"
+
+				document.getElementById('doCreateButton').style.display="block"
+				document.getElementById('doUpdateButton').style.display="none"			
+            }
+			function showUpdate(buttonElement){
+				document.getElementById('showCreateButton').style.display="none"
+				document.getElementById('patientTable').style.display="none"
+				document.getElementById('createUpdateForm').style.display="block"
+				document.getElementById('createLabel').style.display="none"
+				document.getElementById('updateLabel').style.display="inline"
+				document.getElementById('doCreateButton').style.display="none"
+				document.getElementById('doUpdateButton').style.display="block"
+				var rowElement = buttonElement.parentNode.parentNode
+				var patient = getPatientFromRow(rowElement)
+				populateFormWithPatient(patient)		
+			}
+			
+			function doCreate(){
+				var form = document.getElementById('createUpdateForm')
+				var patient = {}
+				//patient.id = form.querySelector('input[name="reg"]').value
+				patient.Patients_Name = form.querySelector('select[name="Patients_Name"]').value
+				patient.Patients_Doctor = form.querySelector('input[name="Patients_Doctor"]').value
+				patient.Patients_Address = form.querySelector('input[name="Patients_Address"]').value
+				patient.Patients_Age = form.querySelector('input[name="Patients_Age"]').value
+				console.log(JSON.stringify(patient))
+				addPatientToTable(patient)	
+				clearForm()
+				showViewAll()
+			}
+			showViewAll(); // this calls the function as soon as the page loads up and not waiting to press the button
+			function showViewAll(){
+				document.getElementById('showCreateButton').style.display="block"
+				document.getElementById('patientTable').style.display="block"
+				document.getElementById('createUpdateForm').style.display="none"
+			}
+			
+			function clearForm(){
+				var form = document.getElementById('createUpdateForm')
+
+				form.querySelector('input[name="Patients_Name"]').value  =''
+				form.querySelector('input[name="Patients_Doctor"]').value=''
+				form.querySelector('input[name="Patients_Address"]').value=''
+				form.querySelector('input[name="Patients_Age"]').value=''
+			}
+			
+			function addPatientToTable(patient){
+				var tableElement = document.getElementById('patientTable')  
+				var rowElement = tableElement.insertRow(-1)
+				rowElement.setAttribute('id',patient.id)
+				var cell1 = rowElement.insertCell(0);
+				cell1.innerHTML = patient.id
+				var cell2 = rowElement.insertCell(1);
+				cell2.innerHTML = patient.Patients_Name
+				var cell3 = rowElement.insertCell(2);
+				cell3.innerHTML = patient.Patients_Doctor
+				var cell4 = rowElement.insertCell(3);
+				cell4.innerHTML = patient.Patients_Address
+				var cell5 = rowElement.insertCell(4);
+				cell5.innerHTML = patient.Patients_Age
+				var cell6 = rowElement.insertCell(5);
+				cell6.innerHTML = '<button onclick="showUpdate(this)">Update</button>'
+				var cell7 = rowElement.insertCell(6);
+				cell7.innerHTML = '<button onclick=doDelete(this)>delete</button>'
+			}
+			
+			function getPatientFromRow(rowElement){
+				var patient ={}
+				patient.id  = rowElement.cells[0].firstChild.textContent
+				patient.Patients_Name = rowElement.cells[1].firstChild.textContent
+				patient.Patients_Doctor = rowElement.cells[2].firstChild.textContent
+				patient.Patients_Address = rowElement.cells[3].firstChild.textContent
+				patient.Patients_Age = rowElement.cells[4].firstChild.textContent
+				return patient
+			}
+			
+			function populateFormWithPatient(patient){
+				var form = document.getElementById('createUpdateForm')
+				form.querySelector('input[name="id"]').disabled = true
+				form.querySelector('input[name="Patients_Name"]').value  = patient.Patients_Name
+				form.querySelector('input[name="Patients_Doctor"]').value= patient.Patients_Doctor
+				form.querySelector('input[name="Patients_Address"]').value= patient.Patients_Address
+				form.querySelector('input[name="Patients_Age"]').value= patient.Patients_Age
+				return patient
+			}
+		
+			function doUpdate(){
+        // Good place for AJAX update to server
+				var car = getCarFromForm();
+				var rowElement = document.getElementById(car.reg)
+				setCarInRow(rowElement,car)
+		   
+				clearForm()
+				showViewAll()
+			}
+			
+				
+			function getPatientFromForm(){
+				var form = document.getElementById('createUpdateForm')
+				var car = {}
+				car.reg = form.querySelector('input[name="reg"]').value
+				car.make = form.querySelector('select[name="make"]').value
+				car.model = form.querySelector('input[name="model"]').value
+				car.price = form.querySelector('input[name="price"]').value
+				console.log(JSON.stringify(car))
+				return car
+			}
+			
+			function setPatientInRow(rowElement, patient){
+				rowElement.cells[0].firstChild.textContent= patient.id
+				rowElement.cells[1].firstChild.textContent= patient.Patients_Name
+				rowElement.cells[2].firstChild.textContent= patient.Patients_Doctor
+				rowElement.cells[3].firstChild.textContent= patient.Patients_Address
+				rowElement.cells[4].firstChild.textContent= patient.Patients_Age
+			}
+			
+			function doDelete(r){
+				var tableElement = document.getElementById('carTable')
+				var index = r.parentNode.parentNode.rowIndex;
+				tableElement.deleteRow(index);
+			}
+			
+			function getAllAjax(){
+				$.ajax({
+					"url":"http://127.0.0.1:5000/patients",
+					"method":"GET",
+					"data":"",
+					"dataType": "JSON",
+					"success":function(result){
+						console.log(result);
+						for (patient of result){
+							addPatientToTable(patient);
+						}
+					},
+					"error":function(xhr,status,error){
+						console.log("error: "+status+" msg:"+error);
+					}
+				});
+			}
+			
+			function createPatientAjax(){
+				console.log(JSON.stringify(patient));
+				$.ajax({
+					"url": "http://127.0.0.1:5000/patients",
+					"method":"POST",
+					"data":JSON.stringify(patient),
+					"dataType": "JSON", 
+					contentType: "application/json; charset=utf-8",
+					"success":function(result){
+					  console.log(result);
+					  document.getElementById("output").innerText = JSON.stringify(result);
+					},
+					"error":function(xhr,status,error){
+					  console.log("error: "+status+" msg:"+error);
+					}
+				});
+			}
+			function updatePatientAjax(){
+				console.log(JSON.stringify(patient));
+				$.ajax({
+					"url": "http://127.0.0.1:5000/patients/"+encodeURI(patient.id),
+					"method":"PUT",
+					"data":JSON.stringify(patient),
+					"dataType": "JSON",
+					contentType: "application/json; charset=utf-8",
+					"success":function(result){
+					  console.log(result);
+					  document.getElementById("output").innerText = JSON.stringify(result);
+					},
+					"error":function(xhr,status,error){
+					  console.log("error: "+status+" msg:"+error);
+					}
+				});
+			}
+ 
+			function deletePatient(){
+				console.log(JSON.stringify(patient));
+				$.ajax({
+					"url": "http://127.0.0.1:5000/patients/"+encodeURI(patient.id),
+					"method":"DELETE",
+					"data":"",
+					"dataType": "JSON",
+					contentType: "application/json; charset=utf-8",
+					"success":function(result){
+					  console.log(result);
+					  document.getElementById("output").innerText = JSON.stringify(result);
+					},
+					"error":function(xhr,status,error){
+					  console.log("error: "+status+" msg:"+error);
+					}
+				});
+			}
+			getAllAjax();
+        </script>
+	</body>
+</html>
