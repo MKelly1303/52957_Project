@@ -11,6 +11,7 @@ db = mysql.connector.connect(
 cursor = db.cursor()
 sql ="select * from patientinfo"
 
+
 cursor.execute(sql)
 result = cursor.fetchall()
 for x in result:
