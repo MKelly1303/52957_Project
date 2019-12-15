@@ -225,10 +225,11 @@
 				return patient
 			}
 
-					
+			host = window.location.origin
+			
 			function getAllAjax(){
 				$.ajax({
-					"url":"http://127.0.0.1:5000/patients",
+					"url":host+"/patients",
 					"method":"GET",
 					"data":"",
 					"dataType": "JSON",
@@ -247,7 +248,7 @@
 			function createPatientAjax(patient){
 				console.log(JSON.stringify(patient));
 				$.ajax({
-					"url": "http://127.0.0.1:5000/patients",
+					"url":host+"/patients",
 					"method":"POST",
 					"data":JSON.stringify(patient),
 					"dataType": "JSON", 
@@ -267,7 +268,7 @@
 			function updatePatientAjax(patient){
 				console.log(JSON.stringify(patient));
 				$.ajax({
-					"url": "http://127.0.0.1:5000/patients/"+encodeURI(patient.id),
+					"url":host+"/patients/",+encodeURI(patient.id),
 					"method":"PUT",
 					"data":JSON.stringify(patient),
 					"dataType": "JSON",
@@ -285,7 +286,7 @@
 			function deletePatientAjax(){
 				//console.log(JSON.stringify('deleting ' +id));
 				$.ajax({
-					"url": "http://127.0.0.1:5000/patients/"+encodeURI(patient.id),
+					"url":host+"/patients/",+encodeURI(patient.id),
 					"method":"DELETE",
 					"data":"",
 					"dataType": "JSON",
