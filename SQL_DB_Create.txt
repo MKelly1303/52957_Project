@@ -1,0 +1,31 @@
+mysql> show tables;
+Empty set (0.01 sec)
+mysql> create table patientinfo(
+    -> id int NOT NULL AUTO_INCREMENT,
+    -> Patients_Name varchar(250),
+    -> Patients_Doctor varchar(250),
+    -> Patients_Address varchar(250),
+    -> Patients_Age int,
+    -> PRIMARY KEY(id)
+    -> );
+Query OK, 0 rows affected (0.03 sec)
+mysql> desc patientinfo;
++------------------+--------------+------+-----+---------+----------------+
+| Field            | Type         | Null | Key | Default | Extra          |
++------------------+--------------+------+-----+---------+----------------+
+| id               | int(11)      | NO   | PRI | NULL    | auto_increment |
+| Patients_Name    | varchar(250) | YES  |     | NULL    |                |
+| Patients_Doctor  | varchar(250) | YES  |     | NULL    |                |
+| Patients_Address | varchar(250) | YES  |     | NULL    |                |
+| Patients_Age     | int(11)      | YES  |     | NULL    |                |
++------------------+--------------+------+-----+---------+----------------+
+5 rows in set (0.00 sec)
+mysql>
+
+
+mysql> INSERT INTO patientinfo (Patients_Name, Patients_Doctor, Patients_Address, Patients_Age) VALUES ('Michael Higgins','Doctor Varakar', 'Phoenix Park, Dublin 7, Ir
+eland', 99);
+Query OK, 1 row affected (0.00 sec)
+mysql> INSERT INTO patientinfo (Patients_Name, Patients_Doctor, Patients_Address, Patients_Age) VALUES ('Tom Waits','Doctor Parnassus', '9th St, Downtown, Dublin', 55)
+;
+Query OK, 1 row affected (0.17 sec)

@@ -1,7 +1,7 @@
 #!flask/bin/python
 #Mark Kelly - 52957 Data Representation - 2019
 from flask import Flask, jsonify, request, abort
-from patient_DAO import patientDAO
+from connectpoolpatient_DAO import patientDAO
 
 app = Flask(__name__, static_url_path='', static_folder='.')
 

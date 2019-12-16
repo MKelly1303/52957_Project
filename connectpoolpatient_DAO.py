@@ -2,15 +2,26 @@ import mysql.connector
 import dbconfig as cfg
 class PatientDAO:
 	db=""
-	def connectToDB(self):
-		self.db = mysql.connector.connect(
+	def initConnectToDB(self):
+		db = mysql.connector.connect(
 			host=cfg.mysql['host'],
 			username=cfg.mysql['username'],
 			password=cfg.mysql['password'],
-			database=cfg.mysql['database']
+			database=cfg.mysql['database'],
+			pool_name="my_connection_pool",
+			pool_size=10
 		)
+		return db
+	
+	def getConnection(self):
+		db = mysql.connector.connect(
+			pool_name='my_connection_pool'
+		)
+		return db
+		
 	def __init__(self):
-		self.connectToDB()
+		db=self.initConnectToDB()
+		db.close()
 		
 	def getCursor(self):
 		if not self.db.is_connected():
@@ -18,17 +29,19 @@ class PatientDAO:
 		return self.db.cursor()
 		
 	def create (self, values):
-		cursor = self.getCursor()
+		db = self.getConnection()
+		cursor = db.cursor()
 		sql="insert into patientinfo (Patients_Name, Patients_Doctor, Patients_Address, Patients_Age) values (%s, %s, %s, %s)"
 		cursor.execute(sql, values)
 
 		self.db.commit()
 		lastRowId=cursor.lastrowid
-		cursor.close()
+		db.close()
 		return lastrowid
 		
 	def getAll(self):
-		cursor = self.getCursor()
+		db = self.getConnection()
+		cursor = db.cursor()
 		sql="select * from patientinfo"
 		cursor.execute(sql)
 		results = cursor.fetchall()
@@ -36,35 +49,38 @@ class PatientDAO:
 		for result in results:
 			print(result)
 			returnArray.append(self.convertToDictionary(result))
-		cursor.close()
+		db.close()
 		return returnArray
 		
 	def findByID(self, id):
-		cursor = self.getCursor()
+		db = self.getConnection()
+		cursor = db.cursor()
 		sql="select * from patientinfo where id = %s"
 		values = (id,)
 		
 		cursor.execute(sql, values)
 		result = cursor.fetchone()
 		patient.self.convertToDictionary(result)
-		cursor.close()
+		db.close()
 		return self.convertToDictionary(result)
 	
 	def update(self, values):
-		cursor = self.getCursor()
+		db = self.getConnection()
+		cursor = db.cursor()
 		sql="update patientinfo set Patients_Name= %s, Patients_Doctor= %s, Patients_Address= %s, Patients_Age= %s where id= %s"
 		cursor.execute(sql, values)
 		self.db.commit()
-		cursor.close()
+		db.close()
 	
 	def delete(self, id):
-		cursor = self.getCursor()	
+		db = self.getConnection()
+		cursor = db.cursor()	
 		sql="delete from patientinfo where id = %s"
 		values = (id,)
 		
 		cursor.execute(sql, values)
 		self.db.commit()
-		cursor.close()
+		db.close()
 		print("delete done")
 		
 	def convertToDictionary(self, result):
